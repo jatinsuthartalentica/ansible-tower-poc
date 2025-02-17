@@ -9,8 +9,11 @@
       failed_when: kubectl_context.rc != 0
       changed_when: false
       ignore_errors: yes
+
+    - name: Debug kubectl context error
       debug:
-        msg: "Error in setting kubectl context: {{ kubectl_context.stderr }}" 
+        msg: "Error in setting kubectl context: {{ kubectl_context.stderr }}"
+      when: kubectl_context.rc != 0
       
     - name: Check if Minikube is accessible
       command: kubectl get nodes
@@ -18,9 +21,12 @@
       failed_when: minikube_status.rc != 0
       changed_when: false
       ignore_errors: yes
+
+    - name: Debug Minikube access error
       debug:
-        msg: "Minikube is not accessible: {{ minikube_status.stderr }}" 
-      
+        msg: "Minikube is not accessible: {{ minikube_status.stderr }}"
+      when: minikube_status.rc != 0
+
     - name: Create the hello namespace
       kubernetes.core.k8s:
         name: hello
