@@ -14,7 +14,7 @@
       debug:
         msg: "Error in setting kubectl context: {{ kubectl_context.stderr }}"
       when: kubectl_context.rc != 0
-      
+
     - name: Check if Minikube is accessible
       command: kubectl get nodes
       register: minikube_status
@@ -35,9 +35,13 @@
         state: present
       register: create_namespace
       failed_when: create_namespace.failed
+      ignore_errors: yes
+
+    - name: Debug namespace creation error
       debug:
         msg: "Namespace creation failed: {{ create_namespace.msg }}"
-      
+      when: create_namespace.failed
+
     - name: Create the Hello World pod in the hello namespace
       kubernetes.core.k8s:
         name: hello-world
@@ -59,5 +63,9 @@
                   - "Hello, World!"
       register: pod_creation
       failed_when: pod_creation.failed
+      ignore_errors: yes
+
+    - name: Debug pod creation error
       debug:
         msg: "Pod creation failed: {{ pod_creation.msg }}"
+      when: pod_creation.failed
