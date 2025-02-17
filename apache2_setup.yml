@@ -1,33 +1,28 @@
 ---
-- name: Create temp.txt file
+- name: Install Apache on all hosts
   hosts: all
+  become: yes  # Use privilege escalation (sudo) to install packages
   tasks:
-    # - name: List files in the current directory
-    #   shell: ls -l
-    #   register: files_list
+    - name: Update apt package list
+      apt:
+        update_cache: yes
 
-    # - name: Show the listed files
-    #   debug:
-    #     var: files_list.stdout
-    - name: Ensure temp.txt file is created
-      file:
-        path: /home/jatin/awx/temp.txt
-        state: touch
-        mode: '0644'
+    - name: Install Apache2 package
+      apt:
+        name: apache2
+        state: present
 
-# ---
-# - name: Configure Apache2 service
-#   hosts: all
-#   tasks:
-#     - name: Install Apache2 package
-#       become: true
-#       apt:
-#         name: apache2
-#         state: present
+    - name: Start Apache2 service
+      service:
+        name: apache2
+        state: started
+        enabled: yes  # Ensure Apache starts on boot
 
+    - name: Check Apache2 status
+      command: systemctl status apache2
+      register: apache_status
+      ignore_errors: yes
 
-#     - name: Ensure Apache2 is started
-#       ansible.builtin.service:
-#         name: apache2
-#         state: started
-#         enabled: true
+    - name: Show Apache2 status
+      debug:
+        var: apache_status.stdout
