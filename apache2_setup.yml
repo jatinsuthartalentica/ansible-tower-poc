@@ -1,6 +1,6 @@
 ---
 - name: Create temp.txt file
-  hosts: localhost
+  hosts: all
   tasks:
     - name: List files in the current directory
       shell: ls -l
