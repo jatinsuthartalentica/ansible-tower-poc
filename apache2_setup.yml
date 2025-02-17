@@ -1,6 +1,7 @@
 ---
 - name: Configure Apache2 service
-  hosts: localhost
+  hosts: all
+  become: yes
   tasks:
     - name: Install Apache2 package
       ansible.builtin.package:
