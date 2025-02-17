@@ -1,29 +1,14 @@
 ---
 - name: Configure Apache2 service
   hosts: localhost
-  become: true
   tasks:
     - name: Install Apache2 package
-      apt:
+      ansible.builtin.package:
         name: apache2
         state: present
-        # update_cache: yes
 
-    - name: Enable Apache2 service to start on boot
-      systemd:
+    - name: Ensure Apache2 is started
+      ansible.builtin.service:
         name: apache2
-        enabled: yes
         state: started
-
-    - name: Copy custom Apache2 configuration (optional)
-      copy:
-        src: /path/to/your/apache2_config_file.conf  # Replace with your config file path
-        dest: /etc/apache2/sites-available/000-default.conf
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Restart Apache2 service
-      systemd:
-        name: apache2
-        state: restarted
+        enabled: true
