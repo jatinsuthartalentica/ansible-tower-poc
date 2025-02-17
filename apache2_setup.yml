@@ -4,7 +4,7 @@
   tasks:
     - name: Ensure temp.txt file is created
       file:
-        path: /path/to/temp.txt
+        path: /home/jatin/awx/temp.txt
         state: touch
         mode: '0644'
 
