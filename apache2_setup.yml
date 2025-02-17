@@ -1,12 +1,13 @@
 ---
 - name: Configure Apache2 service
   hosts: all
-  become: yes
   tasks:
     - name: Install Apache2 package
-      ansible.builtin.package:
+      become: yes
+      apt:
         name: apache2
         state: present
+
 
     - name: Ensure Apache2 is started
       ansible.builtin.service:
