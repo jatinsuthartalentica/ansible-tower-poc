@@ -1,0 +1,57 @@
+---
+- name: Deploy Hello World pod in Minikube under the hello namespace
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Ensure kubectl is configured for Minikube
+      command: kubectl config use-context minikube
+      register: kubectl_context
+      failed_when: kubectl_context.rc != 0
+      changed_when: false
+      ignore_errors: yes
+      debug:
+        msg: "Error in setting kubectl context: {{ kubectl_context.stderr }}" 
+      
+    - name: Check if Minikube is accessible
+      command: kubectl get nodes
+      register: minikube_status
+      failed_when: minikube_status.rc != 0
+      changed_when: false
+      ignore_errors: yes
+      debug:
+        msg: "Minikube is not accessible: {{ minikube_status.stderr }}" 
+      
+    - name: Create the hello namespace
+      kubernetes.core.k8s:
+        name: hello
+        api_version: v1
+        kind: Namespace
+        state: present
+      register: create_namespace
+      failed_when: create_namespace.failed
+      debug:
+        msg: "Namespace creation failed: {{ create_namespace.msg }}"
+      
+    - name: Create the Hello World pod in the hello namespace
+      kubernetes.core.k8s:
+        name: hello-world
+        namespace: hello
+        api_version: v1
+        kind: Pod
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: hello-world
+          spec:
+            containers:
+              - name: hello-world
+                image: busybox
+                command:
+                  - "echo"
+                  - "Hello, World!"
+      register: pod_creation
+      failed_when: pod_creation.failed
+      debug:
+        msg: "Pod creation failed: {{ pod_creation.msg }}"
