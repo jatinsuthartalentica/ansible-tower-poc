@@ -2,18 +2,18 @@
 - name: Create temp.txt file
   hosts: all
   tasks:
-    - name: List files in the current directory
-      shell: ls -l
-      register: files_list
+    # - name: List files in the current directory
+    #   shell: ls -l
+    #   register: files_list
 
-    - name: Show the listed files
-      debug:
-        var: files_list.stdout
-    # - name: Ensure temp.txt file is created
-    #   file:
-    #     path: /home/jatin/awx/temp.txt
-    #     state: touch
-    #     mode: '0644'
+    # - name: Show the listed files
+    #   debug:
+    #     var: files_list.stdout
+    - name: Ensure temp.txt file is created
+      file:
+        path: /home/jatin/awx/temp.txt
+        state: touch
+        mode: '0644'
 
 # ---
 # - name: Configure Apache2 service
