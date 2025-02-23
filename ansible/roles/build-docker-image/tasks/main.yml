@@ -2,5 +2,5 @@
   docker_image:
     name: nodejs-app
     build:
-      path: /opt/my-repo/nodejs-app
+      path: /tmp/ansible-poc/nodejs-app
     source: build
