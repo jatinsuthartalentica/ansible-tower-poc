@@ -1,5 +1,5 @@
 - name: Pull code from GitHub
   git:
     repo: 'https://github.com/jatinsuthartalentica/ansible-tower-poc.git'
-    dest: /tmp/ansible-poc
+    dest: /home/jatin/awx-POC/ansible-poc
     version: main

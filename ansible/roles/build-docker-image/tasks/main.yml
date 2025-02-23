@@ -2,5 +2,5 @@
   docker_image:
     name: nodejs-app
     build:
-      path: /tmp/ansible-poc/nodejs-app
+      path: /home/jatin/awx-POC/ansible-poc/nodejs-app
     source: build
