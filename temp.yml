@@ -1,0 +1,131 @@
+###################### Filebeat Configuration Example #########################
+
+# configuration file.
+
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+
+
+- type: filestream
+
+  # Unique ID among all inputs, an ID is required.
+  id: uat-middleware-logs
+
+  # Change to true to enable this input configuration.
+  enabled: true
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+    - /home/ubuntu/logs/dl-middleware*.out
+    #- /home/ubuntu/logs/dl-middleware2.out
+    - /home/ubuntu/logs/dl-middleware*.err
+
+  fields:
+    env: uat
+    application: dl-middleware
+
+  processors:
+    - add_fields: 
+       fields: 
+         APP_NAME: dl-middleware
+    - script:
+          lang: javascript
+          id: drop_large_logs
+          source: >
+            function process(event) {
+              var messageSize = event.Get("message").length;
+              if (messageSize > 3000000) {  // 7 MB in bytes
+                event.Drop();
+              }
+            }
+   # Set max file size to 8 MB
+  prospector.scanner.max_bytes: 3000000
+
+ # filestream is an input for collecting log messages from files.
+- type: filestream
+
+  # Unique ID among all inputs, an ID is required.
+  id: uat-lightapi-logs
+
+  # Change to true to enable this input configuration.
+  enabled: true
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+    - /home/ubuntu/logs/light-api.out
+    - /home/ubuntu/logs/light-api.err
+    - /home/ubuntu/logs/light-api-4002.out
+    - /home/ubuntu/logs/light-api-4002.err
+    - /home/ubuntu/logs/light-api-4003.out
+    - /home/ubuntu/logs/light-api-4003.err
+
+  processors:
+    - add_fields:
+       fields:
+         APP_NAME: lightapi
+    - script:
+          lang: javascript
+          id: drop_large_logs
+          source: >
+            function process(event) {
+              var messageSize = event.Get("message").length;
+              if (messageSize > 3000000) {  // 7 MB in bytes
+                event.Drop();
+              }
+            }
+
+  prospector.scanner.max_bytes: 4000000
+
+- type: filestream
+  id: uat-partner-gateway-logs
+  enabled: true
+  paths:
+    - /home/ubuntu/logs/partner-gateway-4004.out
+    - /home/ubuntu/logs/partner-gateway-4004.err
+
+  fields:
+    env: uat
+    application: partner-gateway
+
+  processors:
+    - add_fields:
+        fields:
+          APP_NAME: partner-gateway
+    - script:
+        lang: javascript
+        id: drop_large_logs
+        source: >
+          function process(event) {
+            var messageSize = event.Get("message").length;
+            if (messageSize > 3000000) {  // 3 MB in bytes
+              event.Drop();
+            }
+          }
+# ============================== Filebeat modules ============================== 
+
+# ======================= Elasticsearch template setting =======================
+
+setup.template.settings:
+  index.number_of_shards: 1
+  #index.codec: best_compression
+  #_source.enabled: false
+
+
+# ================================== General ===================================
+
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+name: uat-middleware-logs
+
+
+fields:
+  env: uat
+
+# ------------------------------ Logstash Output -------------------------------
+output.logstash:
+  # The Logstash hosts
+  #hosts: ["10.1.75.221:5045"]
+  hosts: ["10.1.36.169:5045"]
+
+  

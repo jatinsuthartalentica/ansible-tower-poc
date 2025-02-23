@@ -1,0 +1,44 @@
+- name: Deploy Node.js App
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: nodejs-service
+        namespace: nodejs
+      spec:
+        ports:
+        - port: 3000
+        selector:
+          app: nodejs
+      ---
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: nodejs-app
+        namespace: nodejs
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: nodejs
+        template:
+          metadata:
+            labels:
+              app: nodejs
+          spec:
+            containers:
+            - name: nodejs
+              image: nodejs-app
+              ports:
+              - containerPort: 3000
+              env:
+              - name: DB_HOST
+                value: "mysql-service.db.svc.cluster.local"
+              - name: DB_NAME
+                value: "userdb"
+              - name: DB_USER
+                value: "root"
+              - name: DB_PASSWORD
+                value: "password"

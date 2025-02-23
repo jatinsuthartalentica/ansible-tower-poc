@@ -1,0 +1,6 @@
+- name: Build Docker image
+  docker_image:
+    name: nodejs-app
+    build:
+      path: /opt/my-repo/nodejs-app
+    source: build

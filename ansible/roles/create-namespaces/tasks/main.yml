@@ -1,0 +1,13 @@
+- name: Create namespaces
+  k8s:
+    name: nodejs
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create DB namespace
+  k8s:
+    name: db
+    api_version: v1
+    kind: Namespace
+    state: present

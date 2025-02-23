@@ -1,0 +1,24 @@
+- hosts: localhost
+  tasks:
+    - include_role:
+        name: pull-code
+
+- hosts: localhost
+  tasks:
+    - include_role:
+        name: build-docker-image
+
+- hosts: localhost
+  tasks:
+    - include_role:
+        name: create-namespaces
+
+- hosts: localhost
+  tasks:
+    - include_role:
+        name: deploy-mysql
+
+- hosts: localhost
+  tasks:
+    - include_role:
+        name: deploy-app

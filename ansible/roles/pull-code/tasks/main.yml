@@ -1,0 +1,5 @@
+- name: Pull code from GitHub
+  git:
+    repo: 'git@github.com:jatinsuthartalentica/ansible-tower-poc.git'
+    dest: /opt/my-repo
+    version: master
