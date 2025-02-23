@@ -1,0 +1,11 @@
+# Ignore Node.js build files
+dist/
+build/
+out/
+*.log
+
+# Ignore Node.js dependencies
+node_modules/
+
+# Ignore package-lock.json
+package-lock.json
