@@ -9,7 +9,7 @@
 
     - name: Ensure the destination directory exists
       file:
-        path: "/home/jatin/awx-POC"
+        path: "/home/jatin/awx-POC/demo-pull"
         state: directory
         owner: "jatin"
         group: "jatin"
@@ -18,7 +18,7 @@
     - name: Clone the repository if not already cloned
       git:
         repo: "git@github.com:jatinsuthartalentica/ansible-tower-poc.git"
-        dest: "/home/jatin/awx-POC"
+        dest: "/home/jatin/awx-POC/demo-pull"
         clone: yes
         update: no
       register: git_clone
@@ -26,6 +26,6 @@
     - name: Pull the latest changes if already cloned
       git:
         repo: "git@github.com:jatinsuthartalentica/ansible-tower-poc.git"
-        dest: "/home/jatin/awx-POC"
+        dest: "/home/jatin/awx-POC/demo-pull"
         update: yes
       when: git_clone is not changed
