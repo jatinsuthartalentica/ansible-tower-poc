@@ -1,0 +1,31 @@
+- name: Clone or Pull Repository from AWX Project
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Git (if not installed)
+      package:
+        name: git
+        state: present
+
+    - name: Ensure the destination directory exists
+      file:
+        path: "/home/jatin/awx-POC/ansible-tower-poc"
+        state: directory
+        owner: "jatin"
+        group: "jatin"
+        mode: '0755'
+
+    - name: Clone the repository if not already cloned
+      git:
+        repo: "https://github.com/your-username/your-repository.git"
+        dest: "/home/jatin/awx-POC/ansible-tower-poc"
+        clone: yes
+        update: no
+      register: git_clone
+
+    - name: Pull the latest changes if already cloned
+      git:
+        repo: "https://github.com/your-username/your-repository.git"
+        dest: "/home/jatin/awx-POC/ansible-tower-poc"
+        update: yes
+      when: git_clone is not changed
