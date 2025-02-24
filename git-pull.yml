@@ -1,6 +1,5 @@
 - name: Clone or Pull Repository from AWX Project
   hosts: all
-  become: yes
   tasks:
     - name: Install Git (if not installed)
       package:
