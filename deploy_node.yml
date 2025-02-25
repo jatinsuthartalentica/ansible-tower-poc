@@ -3,18 +3,18 @@
   tasks:
     - name: Ensure Namespace Exists
       ansible.builtin.shell: kubectl create namespace nodejs --dry-run=client -o yaml | kubectl apply -f -
-    # - name: Apply Kubernetes Configurations
-    #   ansible.builtin.shell: kubectl apply -f /home/jatin/awx-POC/ansible-tower-poc/ansible/{{ item }}
-    #   loop:
-    #     - nodejs-service.yaml
-    #     - nodejs-deployment.yaml
-    #   register: kubectl_output
-    #   changed_when: "'created' in kubectl_output.stdout or 'configured' in kubectl_output.stdout"
+    - name: Apply Kubernetes Configurations
+      ansible.builtin.shell: kubectl apply -f /home/jatin/awx-POC/ansible-tower-poc/ansible/{{ item }}
+      loop:
+        - nodejs-service.yaml
+        - nodejs-deployment.yaml
+      register: kubectl_output
+      changed_when: "'created' in kubectl_output.stdout or 'configured' in kubectl_output.stdout"
 
-    # - name: Verify Deployment Rollout
-    #   ansible.builtin.shell: kubectl rollout status deployment/nodejs-app -n nodejs
-    #   register: rollout_status
-    #   changed_when: false
+    - name: Verify Deployment Rollout
+      ansible.builtin.shell: kubectl rollout status deployment/nodejs-app -n nodejs
+      register: rollout_status
+      changed_when: false
 
-    # - debug:
-    #     msg: "{{ rollout_status.stdout }}"
+    - debug:
+        msg: "{{ rollout_status.stdout }}"
