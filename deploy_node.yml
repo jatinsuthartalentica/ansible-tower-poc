@@ -1,0 +1,30 @@
+- name: Deploy Node.js Application to Kubernetes
+  hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: Create namespace for Node.js app
+      ansible.builtin.shell: |
+        kubectl get namespace nodejs || kubectl create namespace nodejs
+      register: namespace_nodejs
+      changed_when: "'created' in namespace_nodejs.stdout"
+
+    - name: Deploy Node.js Service and Deployment
+      ansible.builtin.shell: |
+        cat <<EOF | kubectl apply -f -
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: nodejs-service
+          namespace: nodejs
+        spec:
+          ports:
+          - port: 3000
+            targetPort: 3000
+          selector:
+            app: nodejs
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+      

@@ -1,44 +1,52 @@
-- name: Deploy Node.js App
-  k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Service
-      metadata:
-        name: nodejs-service
-        namespace: nodejs
-      spec:
-        ports:
-        - port: 3000
-        selector:
-          app: nodejs
-      ---
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: nodejs-app
-        namespace: nodejs
-      spec:
-        replicas: 1
-        selector:
-          matchLabels:
-            app: nodejs
-        template:
-          metadata:
-            labels:
-              app: nodejs
-          spec:
-            containers:
-            - name: nodejs
-              image: nodejs-app
-              ports:
-              - containerPort: 3000
-              env:
-              - name: DB_HOST
-                value: "mysql-service.db.svc.cluster.local"
-              - name: DB_NAME
-                value: "userdb"
-              - name: DB_USER
-                value: "root"
-              - name: DB_PASSWORD
-                value: "password"
+- name: Create namespace for MySQL
+  ansible.builtin.shell: |
+    kubectl get namespace db || kubectl create namespace db
+  register: namespace_db
+  changed_when: "'created' in namespace_db.stdout"
+
+- name: Deploy MySQL Service and Deployment
+  ansible.builtin.shell: |
+    cat <<EOF | kubectl apply -f -
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: mysql-service
+      namespace: db
+    spec:
+      ports:
+      - port: 3306
+        targetPort: 3306
+      selector:
+        app: mysql
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: mysql
+      namespace: db
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: mysql
+      template:
+        metadata:
+          labels:
+            app: mysql
+        spec:
+          containers:
+          - name: mysql
+            image: mysql:5.7
+            env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "password"
+            - name: MYSQL_DATABASE
+              value: "userdb"
+    EOF
+  register: deploy_output
+  changed_when: "'created' in deploy_output.stdout or 'configured' in deploy_output.stdout"
+
+- name: Verify MySQL Deployment Rollout Status
+  ansible.builtin.shell: kubectl rollout status deployment/mysql -n db
+  register: verify_deployment
+  changed_when: false
