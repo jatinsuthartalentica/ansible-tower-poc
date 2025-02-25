@@ -1,5 +1,6 @@
-- name: Clone a public Git repository
-  hosts: localhost
+- name: Clone a public Git repository with elevated privileges
+  hosts: all
+  become: true  # Run with sudo
   gather_facts: no
   tasks:
     - name: Ensure destination directory exists
@@ -7,15 +8,16 @@
         path: /home/jatin/awx-POC/demo-pull
         state: directory
         mode: '0755'
-      become: true
+        owner: jatin
+        group: jatin
 
     - name: Clone the Git repository (Public Repo)
       git:
         repo: "https://github.com/jatinsuthartalentica/ansible-tower-poc.git"
         dest: "/home/jatin/awx-POC/demo-pull"
         version: main  # Change branch if needed
+      become_user: jatin  # Run as Jatin to avoid permission issues
       register: git_clone_result
-      become: true
 
     - name: Debug Git Clone Output
       debug:
