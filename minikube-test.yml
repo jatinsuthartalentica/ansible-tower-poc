@@ -18,3 +18,13 @@
     - name: Display Minikube node status
       debug:
         var: kubectl_nodes.stdout
+        
+    - name: Create namespace for Node.js app
+      ansible.builtin.command: kubectl create namespace nodejs --dry-run=client -o yaml | kubectl apply -f -
+      register: namespace_nodejs
+      changed_when: "'created' in namespace_nodejs.stdout"
+
+    - name: Create namespace for Database
+      ansible.builtin.command: kubectl create namespace db --dry-run=client -o yaml | kubectl apply -f -
+      register: namespace_db
+      changed_when: "'created' in namespace_db.stdout"
