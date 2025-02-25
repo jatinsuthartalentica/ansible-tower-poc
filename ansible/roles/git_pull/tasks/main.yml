@@ -1,0 +1,21 @@
+- name: Ensure destination directory exists
+  file:
+    path: "{{ destination_path }}"
+    state: directory
+    mode: '0755'
+    owner: jatin
+    group: jatin
+
+- name: Clone the Git repository
+  git:
+    repo: "{{ repo_url }}"
+    dest: "{{ destination_path }}"
+    version: "{{ git_branch }}"
+  become_user: jatin  # Run as jatin to avoid permission issues
+  register: git_clone_result
+
+- name: Debug Git Clone Output
+  debug:
+    var: git_clone_result
+
+# tasks file for git_pull

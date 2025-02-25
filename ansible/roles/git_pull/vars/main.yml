@@ -1,0 +1,5 @@
+---
+# vars file for git_pull
+repo_url: "https://github.com/jatinsuthartalentica/ansible-tower-poc.git"
+destination_path: "/home/jatin/awx-POC/demo-pull"
+git_branch: "main"
