@@ -2,23 +2,7 @@
 - name: Verify access to Minikube
   hosts: all
   gather_facts: no
-  tasks:
-    - name: Ensure kubectl is configured for Minikube
-      command: kubectl config use-context minikube
-      register: kubectl_context
-      failed_when: kubectl_context.rc != 0
-      changed_when: false
-
-    - name: Check if Minikube cluster is accessible
-      command: kubectl get nodes
-      register: kubectl_nodes
-      failed_when: kubectl_nodes.rc != 0
-      changed_when: false
-
-    - name: Display Minikube node status
-      debug:
-        var: kubectl_nodes.stdout
-        
+  tasks:        
     - name: Create namespace for Node.js app
       ansible.builtin.shell: kubectl create namespace nodejs --dry-run=client -o yaml | kubectl apply -f -
       register: namespace_nodejs
