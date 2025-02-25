@@ -1,25 +1,31 @@
-- hosts: all
+- name: Clone a Git repository using a role
+  hosts: all
   become: true
   tasks:
     - include_role:
-        name: pull-code
+        name: git_pull
 
-- hosts: all
+
+- name: build docekr image
+  hosts: all
   tasks:
     - include_role:
         name: build-docker-image
 
-- hosts: all
+- name: create namespaces
+  hosts: all
   tasks:
     - include_role:
         name: create-namespaces
 
-- hosts: all
+- name: Create mysql server
+  hosts: all
   tasks:
     - include_role:
         name: deploy-mysql
 
-- hosts: all
+- name: deploy node application
+  hosts: all
   tasks:
     - include_role:
         name: deploy-app
