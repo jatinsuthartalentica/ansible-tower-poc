@@ -1,64 +1,20 @@
-- name: Deploy Node.js Application to Kubernetes
+- name: Deploy Node.js App in Kubernetes
   hosts: all
-  gather_facts: false
   tasks:
+    - name: Ensure Namespace Exists
+      ansible.builtin.shell: kubectl create namespace nodejs --dry-run=client -o yaml | kubectl apply -f -
+    # - name: Apply Kubernetes Configurations
+    #   ansible.builtin.shell: kubectl apply -f /home/jatin/awx-POC/ansible-tower-poc/ansible/{{ item }}
+    #   loop:
+    #     - nodejs-service.yaml
+    #     - nodejs-deployment.yaml
+    #   register: kubectl_output
+    #   changed_when: "'created' in kubectl_output.stdout or 'configured' in kubectl_output.stdout"
 
-    - name: Create namespace for Node.js app
-      ansible.builtin.shell: |
-        kubectl get namespace nodejs || kubectl create namespace nodejs
-      register: namespace_nodejs
-      changed_when: "'created' in namespace_nodejs.stdout"
+    # - name: Verify Deployment Rollout
+    #   ansible.builtin.shell: kubectl rollout status deployment/nodejs-app -n nodejs
+    #   register: rollout_status
+    #   changed_when: false
 
-    - name: Deploy Node.js Service and Deployment
-      ansible.builtin.shell: |
-        cat <<EOF | kubectl apply -f -
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: nodejs-service
-          namespace: nodejs
-        spec:
-          ports:
-          - port: 3000
-            targetPort: 3000
-          selector:
-            app: nodejs
-        ---
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: nodejs-app
-          namespace: nodejs
-        spec:
-          replicas: 1
-              selector:
-              matchLabels:
-          app: nodejs
-          template:
-            metadata:
-              labels:
-                app: nodejs
-            spec:
-              containers:
-              - name: nodejs
-                image: nodejs-app
-                ports:
-                - containerPort: 3000
-                env:
-                - name: DB_HOST
-                  value: "mysql-service.db.svc.cluster.local"
-                - name: DB_NAME
-                  value: "userdb"
-                - name: DB_USER
-                  value: "root"
-                - name: DB_PASSWORD
-                  value: "password"
-        EOF
-      register: deploy_output
-      changed_when: "'created' in deploy_output.stdout or 'configured' in deploy_output.stdout"
-
-    - name: Verify Node.js Deployment Rollout Status
-      ansible.builtin.shell: kubectl rollout status deployment/nodejs-app -n nodejs
-      register: verify_deployment
-      changed_when: false
-
+    # - debug:
+    #     msg: "{{ rollout_status.stdout }}"
