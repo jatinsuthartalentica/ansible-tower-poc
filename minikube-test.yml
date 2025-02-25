@@ -23,8 +23,21 @@
       ansible.builtin.shell: kubectl create namespace nodejs --dry-run=client -o yaml | kubectl apply -f -
       register: namespace_nodejs
       changed_when: "'created' in namespace_nodejs.stdout"
+      failed_when: namespace_nodejs.rc != 0 and 'already exists' not in namespace_nodejs.stderr
 
     - name: Create namespace for Database
       ansible.builtin.shell: kubectl create namespace db --dry-run=client -o yaml | kubectl apply -f -
       register: namespace_db
       changed_when: "'created' in namespace_db.stdout"
+      failed_when: namespace_db.rc != 0 and 'already exists' not in namespace_db.stderr
+    - name: Verify Node.js namespace exists
+      ansible.builtin.shell: kubectl get namespace nodejs --no-headers
+      register: verify_nodejs
+      failed_when: verify_nodejs.rc != 0
+      changed_when: false
+
+    - name: Verify Database namespace exists
+      ansible.builtin.shell: kubectl get namespace db --no-headers
+      register: verify_db
+      failed_when: verify_db.rc != 0
+      changed_when: false
