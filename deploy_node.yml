@@ -25,4 +25,4 @@
       changed_when: false
 
     - debug:
-        msg: "{{ app_url.stdout }}"
+        msg: "{{ app_url.stdout }}/api-docs"
