@@ -1,6 +1,6 @@
 - name: Build Docker image
-  docker_image:
+  community.docker.docker_image:
     name: nodejs-app
     build:
-      path: /home/jatin/awx-POC/ansible-poc/nodejs-app
+      path: /home/jatin/awx-POC/demo-pull/nodejs-app
     source: build

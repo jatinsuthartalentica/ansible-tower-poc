@@ -1,0 +1,8 @@
+- hosts: all
+  tasks:
+    - name: Build Docker image
+      community.docker.docker_image:
+        name: my-docker-image
+        build:
+          path: /home/jatin/awx-POC/demo-pull/nodejs-app
+        source: build
