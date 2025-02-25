@@ -1,14 +1,17 @@
 - name: Clone or Pull Repository from AWX Project
   hosts: all
+  gather_facts: no
   tasks:
     - name: Install Git (if not installed)
       package:
         name: git
         state: present
-
+    - name: Enable Github Global SSH Key
+      debug:
+        var: secure_key
     - name: Ensure the destination directory exists
       file:
-        path: "/home/jatin/awx-POC/demo-pull"
+        path: "/tmp/demo-pull"
         state: directory
         owner: "jatin"
         group: "jatin"
@@ -17,14 +20,16 @@
     - name: Clone the repository if not already cloned
       git:
         repo: "git@github.com:jatinsuthartalentica/ansible-tower-poc.git"
-        dest: "/home/jatin/awx-POC/demo-pull"
+        key_file: "{{ secure_key }}"
+        dest: "/tmp/demo-pull"
         clone: yes
-        update: no
+        update: yes
       register: git_clone
 
     - name: Pull the latest changes if already cloned
       git:
         repo: "git@github.com:jatinsuthartalentica/ansible-tower-poc.git"
-        dest: "/home/jatin/awx-POC/demo-pull"
+        key_file: "{{ secure_key }}"
+        dest: "/tmp/demo-pull"
         update: yes
       when: git_clone is not changed
