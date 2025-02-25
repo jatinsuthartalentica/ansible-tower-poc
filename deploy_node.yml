@@ -27,4 +27,38 @@
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-      
+          name: nodejs-app
+          namespace: nodejs
+        spec:
+          replicas: 1
+              selector:
+              matchLabels:
+          app: nodejs
+          template:
+            metadata:
+              labels:
+                app: nodejs
+            spec:
+              containers:
+              - name: nodejs
+                image: nodejs-app
+                ports:
+                - containerPort: 3000
+                env:
+                - name: DB_HOST
+                  value: "mysql-service.db.svc.cluster.local"
+                - name: DB_NAME
+                  value: "userdb"
+                - name: DB_USER
+                  value: "root"
+                - name: DB_PASSWORD
+                  value: "password"
+        EOF
+      register: deploy_output
+      changed_when: "'created' in deploy_output.stdout or 'configured' in deploy_output.stdout"
+
+    - name: Verify Node.js Deployment Rollout Status
+      ansible.builtin.shell: kubectl rollout status deployment/nodejs-app -n nodejs
+      register: verify_deployment
+      changed_when: false
+
