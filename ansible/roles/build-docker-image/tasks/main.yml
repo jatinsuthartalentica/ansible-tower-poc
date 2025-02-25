@@ -3,3 +3,12 @@
     docker build -t nodejs-app .
   args:
     chdir: /home/jatin/awx-POC/demo-pull/nodejs-app
+
+- name: Load image into Minikube
+  ansible.builtin.shell: |
+    minikube image load nodejs-app
+- name: verify minikube image list.
+  shell: minikube ssh -- docker images | grep nodejs-app
+  register: minikube_images
+- debug:
+  msg: "{{ minikube_images.stdout }}"

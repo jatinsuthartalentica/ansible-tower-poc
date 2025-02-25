@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
       - name: nodejs
-        image: nodejs-app
+        image: nodejs-app  # Use the locally loaded image
+        imagePullPolicy: Never  # Prevent pulling from a remote registry
         ports:
         - containerPort: 3000
         env:
