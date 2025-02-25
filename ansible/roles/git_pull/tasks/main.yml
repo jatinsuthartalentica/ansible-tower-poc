@@ -11,7 +11,8 @@
     repo: "{{ repo_url }}"
     dest: "{{ destination_path }}"
     version: "{{ git_branch }}"
-  become_user: jatin  # Run as jatin to avoid permission issues
+    force: yes
+  become_user: jatin  # Run as jatin to avoid permission issues  
   register: git_clone_result
 
 - name: Debug Git Clone Output
