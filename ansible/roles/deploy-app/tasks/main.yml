@@ -14,4 +14,4 @@
   changed_when: false
 
 - debug:
-  msg: "{{ rollout_status.stdout }}"
+    msg: "{{ rollout_status.stdout }}"
