@@ -4,4 +4,4 @@
       ansible.builtin.shell: |
         docker build -t nodejs-app .
       args:
-      chdir: /home/jatin/awx-POC/demo-pull/nodejs-app
+        chdir: /home/jatin/awx-POC/demo-pull/nodejs-app
