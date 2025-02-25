@@ -18,3 +18,11 @@
 
     - debug:
         msg: "{{ rollout_status.stdout }}"
+
+    - name: application url
+      ansible.builtin.shell: minikube service nodejs-service -n nodejs --url
+      register: app_url
+      changed_when: false
+
+    - debug:
+        msg: "{{ app_url.stdout }}"
