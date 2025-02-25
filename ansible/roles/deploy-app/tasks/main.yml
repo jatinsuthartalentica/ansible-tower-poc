@@ -3,8 +3,8 @@
 - name: Apply Kubernetes Configurations
   ansible.builtin.shell: kubectl apply -f /home/jatin/awx-POC/ansible-tower-poc/ansible/{{ item }}
   loop:
-    - nodejs-service.yaml
-    - nodejs-deployment.yaml
+    - nodejs-service.yml
+    - nodejs-deployment.yml
   register: kubectl_output
   changed_when: "'created' in kubectl_output.stdout or 'configured' in kubectl_output.stdout"
 
