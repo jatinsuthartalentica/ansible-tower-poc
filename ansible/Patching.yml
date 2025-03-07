@@ -1,0 +1,37 @@
+---
+- name: Patch and update servers
+  hosts: all
+  connection: local
+  become: yes  # Run tasks with sudo privileges
+  tasks:
+    - name: Update apt package list
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all installed packages
+      apt:
+        upgrade: dist
+        cache_valid_time: 3600  # Use cache if it's less than 1 hour old
+
+    - name: Perform distribution upgrade (handles dependencies)
+      apt:
+        upgrade: dist
+        force_apt_get: yes
+
+    - name: Remove unnecessary packages
+      apt:
+        autoremove: yes
+
+    - name: Check if a reboot is required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+
+    - name: Reboot the server if required
+      reboot:
+        msg: "Server rebooted after patching"
+        connect_timeout: 5
+        reboot_timeout: 600
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+      when: reboot_required.stat.exists
