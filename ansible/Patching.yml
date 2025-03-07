@@ -1,7 +1,6 @@
 ---
 - name: Patch and update servers
   hosts: all
-  connection: local
   become: yes  # Run tasks with sudo privileges
   tasks:
     - name: Update apt package list
