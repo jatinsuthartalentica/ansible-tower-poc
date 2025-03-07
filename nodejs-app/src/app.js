@@ -8,18 +8,7 @@ const User = require('./models/userModel'); // Import the User model
 
 const app = express();
 app.use(express.json());
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Allow all origins
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200); // Preflight request response
-  }
-
-  next();
-});
- // Enable CORS for all routes
+app.use(cors()); // Enable CORS for all routes
 
 
 // Synchronize models with the database
