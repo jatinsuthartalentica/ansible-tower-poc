@@ -1,0 +1,27 @@
+---
+- name: Check if all pods are running in Minikube using k8s module
+  hosts: localhost
+  tasks:
+    - name: Fetch all pods in the cluster
+      kubernetes.core.k8s_info:
+        kind: Pod
+        namespace: ansible-awx
+      register: pod_info
+
+    - name: List pod details
+      ansible.builtin.debug:
+        var: pod_info.resources
+
+    - name: Check if all pods are in the 'Running' state
+      set_fact:
+        non_running_pods: "{{ pod_info.resources | selectattr('status.phase', '!=', 'Running') | list }}"
+
+    - name: Fail if any pod is not running
+      fail:
+        msg: "Some pods are not in the 'Running' state. Non-running pods: {{ non_running_pods | map(attribute='metadata.name') | list }}"
+      when: non_running_pods | length > 0
+
+    - name: Success message if all pods are running
+      debug:
+        msg: "All pods are in the 'Running' state."
+      when: non_running_pods | length == 0
