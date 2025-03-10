@@ -1,6 +1,6 @@
 ---
 - name: Check if all pods are running in Minikube using k8s module
-  hosts: localhost
+  hosts: all
   tasks:
     - name: Fetch all pods in the cluster
       kubernetes.core.k8s_info:
