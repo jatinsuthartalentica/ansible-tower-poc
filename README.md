@@ -16,11 +16,11 @@ The project consists of Ansible playbooks organized by their purpose:
 ### 1. Workflow Playbooks (Executed in AWX Workflow)
 These playbooks are executed sequentially as part of the deployment workflow in Ansible Tower.
 
-- `[git-pull.yml](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/git-pull.yml)` - Clones the latest Node.js application source code from the repository.
-- `docker-build.yml` - Builds a Docker image for the Node.js application.
-- `create-namespace.yml` - Creates the required Kubernetes namespace in Minikube.
-- `deploy_mysql.yml` - Deploys a MySQL database in Kubernetes.
-- `deploy_node.yml` - Deploys the Node.js application in Minikube.
+- [`git-pull.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/git-pull.yml) - Clones the latest Node.js application source code from the repository.
+- [`docker-build.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/docker-build.yml) - Builds a Docker image for the Node.js application.
+- [`create-namespace.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/create-namespace.yml) - Creates the required Kubernetes namespace in Minikube.
+- [`deploy_mysql.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/deploy_mysql.yml) - Deploys a MySQL database in Kubernetes.
+- [`deploy_node.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/deploy_node.yml) - Deploys the Node.js application in Minikube.
 
 ### 2. Single Deploy Playbooks (Standalone Playbooks)
 These playbooks can be executed independently to deploy specific services.
