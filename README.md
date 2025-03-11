@@ -1,102 +1,83 @@
-# Ansible Tower POC - Deploying a Node.js App on Minikube
+# Ansible Tower POC - Deploying Node.js App on Minikube
 
 ## Overview
-
-This project demonstrates the use of Ansible Tower (AWX) to automate the deployment of a Node.js application in a Minikube cluster. The deployment follows an Ansible workflow that includes pulling the latest code, building a Docker image, creating Kubernetes namespaces, deploying MySQL, and deploying the Node.js application.
+This project automates the deployment of a Node.js application on Minikube using Ansible workflows. The playbooks facilitate the setup of required infrastructure, including MySQL and Kubernetes namespaces, while leveraging Ansible AWX for orchestration.
 
 ## Prerequisites
+Ensure the following dependencies are installed before running the playbooks:
 
-Before running this project, ensure you have the following installed and configured:
-
-- **Ansible AWX**: To execute and manage Ansible workflows.
-- **Minikube**: A lightweight Kubernetes implementation for local development.
-- **Docker**: For building and managing containerized applications.
-- **Kubernetes kubectl**: To interact with the Minikube cluster.
-- **Git**: To clone the repository and manage code changes.
+- **Ansible AWX** (or Ansible Tower)
+- **Minikube** (for Kubernetes deployment)
+- **Docker** (for building and pushing the Node.js application image)
 
 ## Project Structure
+The project consists of Ansible playbooks organized by their purpose:
 
-The repository contains several Ansible playbooks and roles to facilitate the deployment. Below is an organized explanation of the structure:
+### 1. Workflow Playbooks (Executed in AWX Workflow)
+These playbooks are executed sequentially as part of the deployment workflow in Ansible Tower.
 
-### Playbooks
+- `git-pull.yml` - Clones the latest Node.js application source code from the repository.
+- `docker-build.yml` - Builds a Docker image for the Node.js application.
+- `create-namespace.yml` - Creates the required Kubernetes namespace in Minikube.
+- `deploy_mysql.yml` - Deploys a MySQL database in Kubernetes.
+- `deploy_node.yml` - Deploys the Node.js application in Minikube.
 
-#### **Workflow Playbooks** (Executed sequentially in Ansible Tower)
+### 2. Single Deploy Playbooks (Standalone Playbooks)
+These playbooks can be executed independently to deploy specific services.
 
-- **git-pull.yml** - Pulls the latest code from the repository.
-- **docker-build.yml** - Builds the Docker image for the application.
-- **create-namespace.yml** - Creates Kubernetes namespaces to logically separate deployments.
-- **deploy\_mysql.yml** - Deploys MySQL within the Minikube cluster.
-- **deploy\_node.yml** - Deploys the Node.js application on Kubernetes.
+- `nodejs-deployment.yml` - Deploys the Node.js application.
+- `nodejs-service.yml` - Exposes the Node.js application as a service in Kubernetes.
 
-#### **Single-Deploy Playbooks** (Used for individual deployment tasks)
+### 3. Ad-hoc Playbooks (For Testing and System Setup)
+These playbooks handle individual setup or testing tasks:
 
-- **nodejs-deployment.yml** - Defines the Kubernetes deployment for the Node.js application.
-- **nodejs-service.yml** - Configures the Kubernetes service for exposing the Node.js application.
+- `apache2_setup.yml` - Installs and configures Apache2.
+- `hello-world-pod.yml` - Deploys a basic Hello World application for testing Kubernetes plugins.
+- `Patching.yml` - Handles patching tasks for servers.
+- `test-k8.yml` - Tests Kubernetes collections and plugins using `requirement.yml`.
 
-#### **Ad-hoc Playbooks** (For specific one-time tasks or testing)
+### 4. Ansible Roles
+Roles are used to modularize the deployment tasks:
 
-- **apache2\_setup.yml** - Configures Apache2 on the target system.
-- **hello-world-pod.yml** - Deploys a simple Hello World pod for testing purposes.
-- **Patching.yml** - Contains patches or updates for the deployment.
-- **test-k8.yml** - Used for testing Kubernetes plugins via `requirements.yml`.
+- `roles/build-docker-image` - Builds and pushes the application Docker image.
+- `roles/create-namespaces` - Creates Kubernetes namespaces.
+- `roles/deploy-mysql` - Deploys the MySQL database.
+- `roles/deploy-app` - Deploys the Node.js application.
+- `roles/git_pull` - Clones the source repository.
 
-### Roles
+## Deployment Workflow (AWX Tower)
+The deployment process follows this sequence in Ansible Tower:
 
-Roles are structured under `roles/` and contain task definitions for different deployment steps:
+1. **Git Pull** (`git-pull.yml`) - Fetches the latest application code.
+2. **Docker Build** (`docker-build.yml`) - Builds and pushes the application image.
+3. **Create Namespace** (`create-namespace.yml`) - Sets up the required Kubernetes namespace.
+4. **Deploy MySQL** (`deploy_mysql.yml`) - Deploys MySQL in Kubernetes.
+5. **Deploy Node.js App** (`deploy_node.yml`) - Deploys the application.
 
-#### **build-docker-image**
+## API Testing (Postman)
+Once the Node.js application is deployed, you can test it using the following endpoints:
 
-- `tasks/main.yml` - Builds the Docker image for the application.
+### 1. Add User
+- **URL:** `http://<ipaddress>:30001/api/add-user`
+- **Method:** POST
+- **Body (JSON, raw format):**
+  ```json
+  {
+    "name": "jatin",
+    "city": "jalandhar",
+    "state": "punjab",
+    "mobileNumber": "1111111111"
+  }
+  ```
 
-#### **create-namespaces**
+### 2. Get All Users
+- **URL:** `http://<ipaddress>:30001/api/get-all-users`
+- **Method:** GET
 
-- `tasks/main.yml` - Creates Kubernetes namespaces.
-
-#### **deploy-app**
-
-- `tasks/main.yml` - Deploys the Node.js application in Kubernetes.
-
-#### **deploy-mysql**
-
-- `tasks/main.yml` - Deploys the MySQL database.
-
-#### **git\_pull**
-
-- `defaults/main.yml` - Stores default variables for the Git pull operation.
-- `handlers/main.yml` - Defines handlers for Git operations.
-- `meta/main.yml` - Metadata for the role.
-- `tasks/main.yml` - The main task file responsible for pulling the latest Git code.
-- `tests/` - Contains test configurations for validating the Git pull process.
-- `vars/main.yml` - Stores variable definitions for the role.
-
-## Deployment Workflow
-
-In Ansible Tower, the workflow executes the following playbooks in sequence:
-
-1. **git-pull.yml** - Clones the latest repository code.
-2. **docker-build.yml** - Builds the Docker image.
-3. **create-namespace.yml** - Creates the required Kubernetes namespaces.
-4. **deploy\_mysql.yml** - Deploys MySQL in Minikube.
-5. **deploy\_node.yml** - Deploys the Node.js application in Kubernetes.
-
-## Execution Steps
-
-1. Ensure all prerequisites are installed.
-2. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd ansible-tower-poc/ansible
-   ```
-3. Run the playbook manually (if not using AWX):
-   ```bash
-   ansible-playbook playbook.yml
-   ```
-4. Check the deployed application on Minikube:
-   ```bash
-   minikube service list
-   ```
+### 3. Get Specific User
+- **URL:** `http://<ipaddress>:30001/api/get-user/<user_id>`
+- **Method:** GET
 
 ## Conclusion
-
-This project automates the deployment of a Node.js application using Ansible AWX, Minikube, and Docker. By leveraging Ansible roles and playbooks, it simplifies the management of Kubernetes deployments.
+This project streamlines the deployment of a Node.js application using Ansible, Minikube, and Kubernetes. By leveraging AWX Tower, we ensure an automated and efficient deployment process. Happy deploying! 🚀
 
