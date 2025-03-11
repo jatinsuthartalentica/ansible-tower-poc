@@ -16,7 +16,7 @@ The project consists of Ansible playbooks organized by their purpose:
 ### 1. Workflow Playbooks (Executed in AWX Workflow)
 These playbooks are executed sequentially as part of the deployment workflow in Ansible Tower.
 
-- `git-pull.yml` - Clones the latest Node.js application source code from the repository.
+- `[git-pull.yml](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/git-pull.yml)` - Clones the latest Node.js application source code from the repository.
 - `docker-build.yml` - Builds a Docker image for the Node.js application.
 - `create-namespace.yml` - Creates the required Kubernetes namespace in Minikube.
 - `deploy_mysql.yml` - Deploys a MySQL database in Kubernetes.
