@@ -6,7 +6,7 @@ This project automates the deployment of a Node.js application on Minikube using
 ## Prerequisites
 Ensure the following dependencies are installed before running the playbooks:
 
-- **Ansible AWX** (or Ansible Tower)
+- **Ansible AWX** (or Ansible Tower) [Installation Guide](https://www.linuxtechi.com/install-ansible-awx-on-ubuntu/)
 - **Minikube** (for Kubernetes deployment)
 - **Docker** (for building and pushing the Node.js application image)
 
