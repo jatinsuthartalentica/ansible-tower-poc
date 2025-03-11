@@ -25,25 +25,26 @@ These playbooks are executed sequentially as part of the deployment workflow in 
 ### 2. Single Deploy Playbooks (Standalone Playbooks)
 These playbooks can be executed independently to deploy specific services.
 
-- `nodejs-deployment.yml` - Deploys the Node.js application.
-- `nodejs-service.yml` - Exposes the Node.js application as a service in Kubernetes.
+- [`nodejs-deployment.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/nodejs-deployment.yml) - Deploys the Node.js application.
+- [`nodejs-service.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/nodejs-service.yml) - Exposes the Node.js application as a service in Kubernetes.
 
 ### 3. Ad-hoc Playbooks (For Testing and System Setup)
 These playbooks handle individual setup or testing tasks:
 
-- `apache2_setup.yml` - Installs and configures Apache2.
-- `hello-world-pod.yml` - Deploys a basic Hello World application for testing Kubernetes plugins.
-- `Patching.yml` - Handles patching tasks for servers.
-- `test-k8.yml` - Tests Kubernetes collections and plugins using `requirement.yml`.
+- [`apache2_setup.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/apache2_setup.yml) - Installs and configures Apache2.
+- [`hello-world-pod.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/hello-world-pod.yml) - Deploys a basic Hello World application for testing Kubernetes plugins.
+- [`Patching.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/Patching.yml) - Handles patching tasks for servers.
+- [`test-k8.yml`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/test-k8.yml) - Tests Kubernetes collections and plugins using `requirement.yml`.
 
 ### 4. Ansible Roles
 Roles are used to modularize the deployment tasks:
 
-- `roles/build-docker-image` - Builds and pushes the application Docker image.
-- `roles/create-namespaces` - Creates Kubernetes namespaces.
-- `roles/deploy-mysql` - Deploys the MySQL database.
-- `roles/deploy-app` - Deploys the Node.js application.
-- `roles/git_pull` - Clones the source repository.
+- [`roles/build-docker-image`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/roles/build-docker-image/tasks/main.yml) - Builds and pushes the application Docker image.
+- [`roles/create-namespaces`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/roles/create-namespaces/tasks/main.yml) - Creates Kubernetes namespaces.
+- [`roles/deploy-mysql`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/roles/deploy-mysql/tasks/main.yml) - Deploys the MySQL database.
+- [`roles/deploy-app`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/roles/deploy-app/tasks/main.yml) - Deploys the Node.js application.
+- [`roles/git_pull`](https://github.com/jatinsuthartalentica/ansible-tower-poc/blob/main/ansible/roles/git_pull/tasks/main.yml) - Clones the source repository.
+
 
 ## Deployment Workflow (AWX Tower)
 The deployment process follows this sequence in Ansible Tower:
